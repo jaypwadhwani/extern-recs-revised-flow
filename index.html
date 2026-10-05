@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Revised Recommendations Flow</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"><style>
+/* Layout: a horizontal film strip of steps, each frame scrollable, with the reasoning as a side rail. Extern's own palette: warm near-black, the blue, periwinkle, pale green. */
+:root{--bg:#fdfbfa;--fg:#1c1b1b;--muted:#5f5e5d;--line:#e5e2e1;--line-strong:#c9c6c5;--card:#ffffff;--blue:#2853d2;--peri:#dce1ff;--peri-ink:#1e3fa8;--mint:#c8ffc1;--mint-ink:#1f6b2a;--amber:#fcebcb;--amber-ink:#9a6700;--frame:#f1efee;--display:"DM Serif Display",Georgia,serif;--sans:Inter,system-ui,-apple-system,sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#171615;--fg:#f3f1ef;--muted:#b3b0ad;--line:#2e2c2b;--line-strong:#4a4745;--card:#201f1e;--blue:#7d9bff;--peri:#27336b;--peri-ink:#c9d4ff;--mint:#1f4a26;--mint-ink:#bfeeb6;--amber:#4a3a12;--amber-ink:#f0cf7a;--frame:#262524;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171615;--fg:#f3f1ef;--muted:#b3b0ad;--line:#2e2c2b;--line-strong:#4a4745;--card:#201f1e;--blue:#7d9bff;--peri:#27336b;--peri-ink:#c9d4ff;--mint:#1f4a26;--mint-ink:#bfeeb6;--amber:#4a3a12;--amber-ink:#f0cf7a;--frame:#262524;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.45;margin:0}
+.page{padding-block:32px 64px;padding-inline:clamp(16px,4vw,48px);max-width:1600px;margin:0 auto}
+header h1{font-family:var(--display);font-weight:400;font-size:clamp(32px,4vw,48px);line-height:1.05;margin:0 0 10px;letter-spacing:-.5px;text-wrap:balance}
+header p{max-width:70ch;color:var(--muted);margin:0 0 18px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.tag.keep{background:var(--frame);color:var(--muted)}
+.tag.new{background:var(--mint);color:var(--mint-ink)}
+.tag.rev{background:var(--peri);color:var(--peri-ink)}
+.tag.cut{background:var(--amber);color:var(--amber-ink)}
+.why{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:36px}
+.why .k{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.why .k b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;display:block;margin-bottom:6px;font-variant-numeric:tabular-nums}
+.why .k span{color:var(--muted);font-size:13px}
+h2{font-family:var(--display);font-weight:400;font-size:28px;margin:40px 0 14px;letter-spacing:-.3px}
+.strip{display:flex;gap:18px;overflow-x:auto;padding-bottom:16px;scroll-snap-type:x proximity}
+.step{flex:0 0 min(92vw,900px);scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;display:grid;gap:12px;min-width:0}
+.step .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.step .n{width:28px;height:28px;border-radius:50%;background:var(--fg);color:var(--bg);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.step h3{margin:0;font-size:17px;font-weight:600}
+.frames{display:grid;grid-template-columns:1fr 200px;gap:12px}
+.frame{background:var(--frame);border:1px solid var(--line);border-radius:12px;overflow:auto;height:430px;position:relative}
+.frame img{display:block;width:100%;height:auto;max-width:100%}
+.frame.phone{height:430px}
+.frame .lbl{position:sticky;top:0;left:0;background:var(--card);color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--line);z-index:1}
+.note{font-size:14px;color:var(--muted)}
+.note b{color:var(--fg);font-weight:600}
+.arrow{align-self:center;flex:0 0 auto;color:var(--line-strong);font-size:28px;padding:0 2px}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.rail .c{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.rail h4{margin:0 0 8px;font-size:15px;font-weight:600}
+.rail ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+.rail li{margin-bottom:6px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 10px}
+.research{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin-bottom:28px;scroll-snap-type:x proximity}
+.research .r{flex:0 0 300px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.research .src{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.research .src.ours{color:var(--peri-ink)}
+.research .big{font-family:var(--display);font-weight:400;font-size:26px;line-height:1.05;font-variant-numeric:tabular-nums}
+.research .f{font-size:14px;color:var(--fg)}
+.research .sup{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.research .sup b{color:var(--fg);font-weight:600}
+h2.tight{margin-top:0}
+.research .r.lead{flex-basis:420px;background:var(--peri);border-color:transparent}
+.research .r.lead .src,.research .r.lead .sup{color:var(--peri-ink)}
+.research .r.lead .f,.research .r.lead .sup b{color:var(--fg)}
+@media (max-width:700px){.research .r,.research .r.lead{flex-basis:86vw}}
+@media (max-width:700px){.frames{grid-template-columns:1fr}.frame{height:360px}.frame.phone{height:420px}.step{flex-basis:92vw}}
+@media (prefers-reduced-motion: reduce){.strip{scroll-behavior:auto}}
+</style><style>html{background:#fdfbfa}@media (prefers-color-scheme: dark){html{background:#171615}}img{max-width:100%}</style></head><body>
+
+
+<div class="page">
+<header>
+  <h1>Recommendations Redesign, the revised flow</h1>
+  <p>The page you have today, plus two changes. Screens marked Existing are real screenshots. The two new ones are mockups in the same style.</p>
+  <div class="legend"><span class="tag keep">Existing, unchanged</span><span class="tag new">New screen</span><span class="tag rev">Revised screen</span><span class="tag cut">Removed</span></div>
+</header>
+
+<div class="rail" style="margin-bottom:36px">
+  <div class="c"><h4>What I recommend</h4><ul><li><b>Add one screen before the card form.</b> It says what you're starting, what it costs, and when. One button: Continue to payment.</li><li><b>Make the card screen easier.</b> Apple Pay and Google Pay first. Then a simple timeline: free today, reminder on day 5, charged on day 7.</li></ul></div>
+  <div class="c"><h4>Why</h4><ul><li><b>The problem is the card form, not the page.</b> Lots of people click Start trial. Most of them leave when they see the card form.</li><li><b>People need a moment to decide.</b> When we had a plan picker, 6 in 10 who reached checkout entered a card. Without any deciding step, only 2 in 10 do.</li><li><b>Being clear about the charge date works.</b> Blinkist showed the timeline and promised a reminder. Trial starts went up 23%.</li></ul></div>
+</div>
+<h2 class="tight">The four reasons</h2>
+<p class="note" style="margin:0 0 12px">One outside case study that shows the fix works, and three things from our own tests that show we need it.</p>
+<div class="research">
+  <div class="r lead"><div class="src">1. Blinkist, growth.design case study</div><div class="big">+23% trial starts</div><div class="f">Blinkist asked why people stopped at the card. The top answer: fear of forgetting to cancel and getting charged. So they replaced the sales copy with a plain timeline, "today free, day 5 reminder, day 7 charged," and promised to send the reminder. Trial starts rose 23%. Complaints fell 55%.</div><div class="sup"><b>This is the model for both new screens:</b> the timeline, the reminder promise, and nothing else on the card screen.</div></div>
+  <div class="r"><div class="src ours">2. Our test: no plan picker</div><div class="big">6 in 10 → 2.5 in 10</div><div class="f">With a plan picker, 6 in 10 people who reached checkout entered a card. We removed the picker, and it fell to 2.5 in 10. Trials didn't go up.</div><div class="sup"><b>Why it matters:</b> the picker was the moment people decided. We need to give that moment back, without the picker.</div></div>
+  <div class="r"><div class="src ours">3. Our test: the Narrative page</div><div class="big">2 in 10</div><div class="f">A trial button on every card sends the most people to checkout we've ever seen. Only 2 in 10 of them enter a card. Buttons pressed after the page made its case convert twice as well as buttons pressed while browsing.</div><div class="sup"><b>Why it matters:</b> ask for the trial after the person has decided, not before.</div></div>
+  <div class="r"><div class="src">4. 2026 trial benchmarks</div><div class="big">3 to 4x</div><div class="f">Trials that take a card turn into paying customers 3 to 4 times more often than trials that don't.</div><div class="sup"><b>Why it matters:</b> we keep the card. The fix is to make the card step feel safe, not to remove it.</div></div>
+</div>
+<div class="why">
+  <div class="k"><b>6 in 10</b><span>entered a card when there was a plan picker first</span></div>
+  <div class="k"><b>3.5 in 10</b><span>entered a card on your Redesign, where Project 1 comes first</span></div>
+  <div class="k"><b>2 in 10</b><span>entered a card on the Narrative, which has no deciding step</span></div>
+  <div class="k"><b>+23%</b><span>trial starts at Blinkist after showing the trial timeline</span></div>
+</div>
+
+<h2>The flow, end to end</h2>
+<div class="strip">
+  <div class="step">
+    <div class="top"><span class="n">1</span><h3>Your top recommendations</h3><span class="tag keep">Existing</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-1-recs.png" alt="Recommendations page: three cards, Best fit first, field chips, bottom trial bar"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-1-recs.png" alt="Recommendations page on a phone"></div>
+    </div>
+    <div class="note"><b>No change.</b> The only difference: every Start $0 trial button now goes to the new confirm screen instead of straight to the card form.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">2</span><h3>Project 1 at Attronica</h3><span class="tag keep">Existing</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-3-project1-answered.png" alt="Project 1 questions, answered"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-3-project1-answered.png" alt="Project 1 questions on a phone"></div>
+    </div>
+    <div class="note"><b>No change.</b> Three quick questions from the real project. This is where people start to decide. The Narrative page doesn't have a step like this, which is part of why it does worse.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">3</span><h3>Your Project 1 takeaways</h3><span class="tag keep">Existing</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-4-takeaways.png" alt="Takeaways with the externship panel and trial button"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-4-takeaways.png" alt="Takeaways on a phone"></div>
+    </div>
+    <div class="note"><b>No change.</b> By this point the person has seen what the work is like. Trial buttons clicked here convert about twice as well as buttons clicked while people are still browsing.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">4</span><h3>You're starting Attronica</h3><span class="tag new">New</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-7-confirm.png" alt="Confirm screen: externship summary, plan line with change link, trial timeline, continue to payment"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-7-confirm.png" alt="Confirm screen on a phone"></div>
+    </div>
+    <div class="note"><b>The new screen.</b> Before anyone sees a card form, they see three things: what they're starting, what it costs and when, and that they'll get a reminder before being charged. One button forward, one button back. This does the job the plan picker used to do, without making them pick a plan.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">5</span><h3>Checkout</h3><span class="tag rev">Revised</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-8-checkout-revised.png" alt="Revised checkout: wallet buttons first, card fields below, timeline recap and reminder promise"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-8-checkout-revised.png" alt="Revised checkout on a phone"></div>
+    </div>
+    <div class="note"><b>Three changes.</b> Apple Pay and Google Pay come first, so on a phone it's a thumbprint instead of typing a card number. The three plan boxes are gone, since the plan was already confirmed. Under the button: free today, reminder Oct 10, charged Oct 12, and a promise that we'll email before the charge.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">5b</span><h3>Checkout today, for comparison</h3><span class="tag cut">Replaced</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-6-checkout.png" alt="Current checkout: plan tiles, green trial panel, card and Cash App radio, Link below"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-6-checkout.png" alt="Current checkout on a phone"></div>
+    </div>
+    <div class="note"><b>What people see today.</b> Pick a plan again, read a list, type a card. The charge date is the last line on the page. On a phone, the easy pay buttons are below the fold.</div>
+  </div>
+</div>
+
+
+<h2>The Narrative, as it runs today</h2>
+<p class="note" style="margin:0 0 12px">Dishita and Vinny's V1, live since Sep 30. Shown for comparison. Nothing here changes until V2 is built.</p>
+<div class="strip">
+  <div class="step">
+    <div class="top"><span class="n">A</span><h3>The page</h3><span class="tag keep">Existing</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-n1-page.png" alt="Narrative page: personal hero, three cards with View details and Start now, first 7 days carousel"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-n1-page.png" alt="Narrative page on a phone"></div>
+    </div>
+    <div class="note"><b>Where the clicks happen.</b> Start now sits on every card, plus Start $0 trial in the top bar and under the first 7 days. 6 in 10 people click one of them. The card buttons get the most clicks and convert the worst.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">B</span><h3>View details</h3><span class="tag keep">Existing</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-n2-details.png" alt="Narrative details modal with a Start now button"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-n2-details.png" alt="Narrative details modal on a phone"></div>
+    </div>
+    <div class="note"><b>Half of viewers open this.</b> Its only button is Start now, which goes straight to the card form. Those clicks convert worst of all, 17 in 100. People open details to learn more, then get asked to pay.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">C</span><h3>View all projects</h3><span class="tag keep">Existing</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-n3-drawer.png" alt="Narrative browse drawer with category chips and the externship list"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-n3-drawer.png" alt="Narrative browse drawer on a phone"></div>
+    </div>
+    <div class="note"><b>4 in 10 open this.</b> People are still comparing at this point. The page is good at holding attention. It just asks for the card before the comparing is done.</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="top"><span class="n">D</span><h3>Checkout</h3><span class="tag keep">Same as today</span></div>
+    <div class="frames">
+      <div class="frame"><div class="lbl">Desktop 1280</div><img src="shots/desktop-n4-checkout.png" alt="Checkout reached from the Narrative, same as today's checkout"></div>
+      <div class="frame phone"><div class="lbl">Phone 390</div><img src="shots/phone-n4-checkout.png" alt="Checkout on a phone"></div>
+    </div>
+    <div class="note"><b>Same checkout as every arm.</b> Only 2 in 10 people who get here from the Narrative enter a card. No screen between browsing and this one did the deciding.</div>
+  </div>
+</div>
+
+<h2>The numbers, if you want them</h2>
+<div class="tablewrap"><table>
+  <thead><tr><th>Page</th><th>Got to checkout</th><th>Of those, entered a card</th><th>Started a trial</th></tr></thead>
+  <tbody>
+    <tr><td>Control, with the plan picker</td><td>33 of 100</td><td>6 in 10</td><td>18 of 100</td></tr>
+    <tr><td>Your Redesign, Project 1 first</td><td>46 of 100</td><td>3.5 in 10</td><td>14 of 100</td></tr>
+    <tr><td>Narrative, no deciding step</td><td>62 of 100</td><td>2 in 10</td><td>11.5 of 100</td></tr>
+    <tr><td>Control without the picker, last week of Sep</td><td>69 of 100</td><td>2.5 in 10</td><td>12 of 100</td></tr>
+  </tbody>
+</table></div>
+
+<div class="rail" style="margin-top:14px">
+  <div class="c"><h4>The simple version</h4><ul><li>Getting people to checkout is easy. Getting them to enter a card is the hard part.</li><li>People enter a card when something before it helped them decide. The plan picker did that. Project 1 does some of it. The Narrative has nothing.</li><li>The new confirm screen is that "decide" moment, without making people pick a plan.</li></ul></div>
+  <div class="c"><h4>Why not just drop the card?</h4><ul><li>Trials that ask for a card turn into paying customers 3 to 4 times more often. We keep the card.</li><li>The fix is to make the card step feel safe: show the dates, promise a reminder, make paying one tap.</li></ul></div>
+  <div class="c"><h4>What other companies do</h4><ul><li>Blinkist shows the trial timeline and promises a reminder. Trial starts went up 23% and complaints dropped by half.</li><li>Coursera and Skillshare put the charge date and a reminder promise right next to the payment field.</li></ul></div>
+  <div class="c"><h4>Questions for Dishita and Vinny</h4><ul><li>On the cards, should Start $0 trial become a smaller link, with See first week as the main button?</li><li>On the confirm screen, is "You leave with" the right thing to show, or should it show the first week?</li><li>On checkout, keep the photo and the long list on the left, or keep it this simple?</li></ul></div>
+</div>
+</div>
+</body></html>
